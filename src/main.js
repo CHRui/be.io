@@ -19,6 +19,7 @@ import layout from './components/layout.vue';
 import goodslist from './components/goods/goodslist.vue';
 import goodsinfo from './components/goods/goodsinfo.vue';
 import car from './components/goods/car.vue';
+import shopping from './components/goods/shopping.vue';
 
 // 3.0.2 实例化对象并且定义路由规则
 var router = new VueRouter({
@@ -32,7 +33,8 @@ var router = new VueRouter({
             // 商品列表
            {name:'goodslist',path:'goodslist',component:goodslist},
            {name:'goodsinfo',path:'goodsinfo/:goodsid',component:goodsinfo},
-           {name:'car',path:'car',component:car}
+           {name:'car',path:'car',component:car},
+           { name: 'shopping', path: 'shopping/:ids', component: shopping}
         ]                      
     }
     ]
@@ -91,7 +93,7 @@ import {setItem,getItem} from './kits/localSto.js';
 var mutations = {
     changeCount(state,goodsobj){
         var obj = getItem;
-        var tcpunt =0;
+        var tcount =0;
         for(var key in obj){
             tcount += obj[key];
         }

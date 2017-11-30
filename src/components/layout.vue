@@ -13,10 +13,15 @@
                         <a href="/login.html">登录</a>
                         <a href="/register.html">注册</a>
                         <strong>|</strong>
-                        <router-link to="/site/car">
+                        <a id="layoutbuycar" href="/cart.html">
                             <i class="iconfont icon-cart"></i>
-                            购物车(<span id="shoppingCartCount">{{this.$store.getters.getBuyCount}}</span>)
-                        </router-link>
+                            购物车(<span id="shoppingCartCount">{{buyTotalCount}}</span>)</a>
+
+
+                        <!-- <router-link to="/site/car">
+                            <i class="iconfont icon-cart"></i>
+                            购物车(<span id="layoutbuycar">{{this.$store.getters.getBuyCount}}</span>)
+                        </router-link> -->
                         <!-- <a href="/content/contact.html"><i class="iconfont icon-phone"></i>联系我们</a>
                         <a href="/cart.html"><i class="iconfont icon-cart"></i>购物车(<span id="shoppingCartCount"><script type="text/javascript" src="/tools/submit_ajax.ashx?action=view_cart_count"></script></span>)</a> -->
                     </div>
@@ -56,9 +61,9 @@
                                 </a>
                             </li>
                             <li>
-                                <a target="_blank" href="/admin/index.aspx">
+                                <router-link to="/site/goodslist">
                                    购物商城
-                                </a>
+                                </router-link>
                             </li>
                         </ul>
                     </div>

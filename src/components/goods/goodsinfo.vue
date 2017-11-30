@@ -215,6 +215,7 @@
 </template>
 <script>
   import '../../../statics/jqplugins/jqimgzoom/js/magnifier.js';
+  // 导入事件总线的相关数据
   import {vm,KEY} from '../../kits/bus.js';
   import {setItem} from '../../kits/localSto.js';
   export default {
@@ -234,10 +235,10 @@
         info: {}
       }
     },
-    methods() {
+    mounted() {
       this.getinfo();
       this.getCommentList();
-      getTimeout(()=>{
+      setTimeout(()=>{
         var offsetObj = $(this.$refs.btnaddcar).offset();
         this.offsetObj = offsetObj;
         $(this.$refs.img).css("left",offsetObj.left).css("top",offsetObj.top);
@@ -255,7 +256,7 @@
         el.style.left = this.offsetObj.left + 'px';
         el.style.top = this.offsetObj.top + 'px';
       },
-      enter(el,done){
+      enter(el,done){  
         el.offsetWidth;
         el.style.left = this.lbcOffSet.left + 'px';
         el.style.top = this.lbcOffSet.top + 'px';
@@ -328,6 +329,6 @@
     width: 50px;
     height: 50px;
     position: absolute;
-    transition: all 0.3;
+    transition: all 1s;
   }
 </style>

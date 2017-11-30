@@ -167,6 +167,20 @@
             }
         },
         methods: {
+          // 跳到订单页面
+          shopping(){
+            var goodsids = [];
+            this.values.forEach((item,index)=>{
+              if(item == true){
+                goodsids.push(this.goodslist[index].id);
+              }
+            });
+            if(goodsids.lenght<=0){
+              this.$message.error('请至少选择一个需要购买的商品');
+              return;
+            }
+            this.$router.push({name:'shopping',params:{ids:goodsids.join(',')}});
+          },
             
             // 删除购物车中的商品
             delData(goodsid){
