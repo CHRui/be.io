@@ -20,7 +20,8 @@
 
                         <router-link to="/site/car">
                             <i class="iconfont icon-cart"></i>
-                            购物车(<span id="layoutbuycar">{{this.$store.getters.getBuyCount}}</span>)
+                            购物车(
+                            <span id="layoutbuycar">{{this.$store.getters.getBuyCount}}</span>)
                         </router-link>
 
                         <!-- <a href="/content/contact.html"><i class="iconfont icon-phone"></i>联系我们</a>
@@ -63,7 +64,7 @@
                             </li>
                             <li>
                                 <router-link to="/site/goodslist">
-                                   购物商城
+                                    购物商城
                                 </router-link>
                             </li>
                         </ul>
@@ -87,12 +88,12 @@
 </template>
 
 <script>
-    import {vm,KEY} from '../kits/bus.js';
+    import { vm, KEY } from '../kits/bus.js';
     export default {
         data() {
             return {
                 // 用户商品默认的数量
-                buyTotalCount:0
+                buyTotalCount: 0
             }
         },
         mounted() {
@@ -112,19 +113,33 @@
             });
             var countStr = localStorage.getItem('buyTotalCount');
             console.log(countStr);
-            if(countStr !="NaN"){
+            if (countStr != "NaN") {
                 this.buyTotalCount = parseInt(countStr);
             }
-            vm.$on(KEY,(buycount)=>{
+            vm.$on(KEY, (buycount) => {
                 this.buyTotalCount += buycount;
-                localStorage.setItem('buyTotalCount',this.buyTotalCount);
+                localStorage.setItem('buyTotalCount', this.buyTotalCount);
+            })
+            this.chexkLogin();
+            vm.$on('changlogin', (val) => {
+                this.checkLogin();
             })
         },
         methods: {
+            logout(){
+                this.$ajax.get('/site/account/logout').then(res=>{
+                    if(res.data.status == 0){
+                        this.islogin = false;
+                        localStorage.setItem('logined','fase');
+                        this.$router.push({name;'goodslist'});
+                    }
+                })
+            }
         }
     }
 </script>
 <style scoped>
     /* 导入样式 */
+
     @import url('../../statics/jqplugins/jqhovernav/jqhoverNav.css');
 </style>
