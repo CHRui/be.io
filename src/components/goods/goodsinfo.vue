@@ -268,7 +268,7 @@
       addCar(){
         // vm.$emit(KEY,this.currentBuyCount);
         // var goodsobj = {gid:this.$route.params.goodsid,count:this.currentBuyCount};
-        var goodsobj = {gid:this.$route.params.goodsid,count:this.currentBuyCount};
+        var goodsobj = {gid:this.$route.params.goodsid, count:this.currentBuyCount};
         setItem(goodsobj);
         this.$store.dispatch('changeCount',goodsobj);
         this.isshow  = true;

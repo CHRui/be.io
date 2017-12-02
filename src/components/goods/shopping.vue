@@ -215,6 +215,13 @@
         }
       };
       return {
+        expressFee:{
+          "1": 20,
+          "2": 10,
+          "3": 8
+        },
+        cuttentFee: 20,
+        goodsAmount: 0,
         buygoodslist: [],
         gids: this.$route.params.ids,
         from1: {
@@ -252,14 +259,59 @@
     mounted(){
       this.getbuygoodslist();
     },
-    mrthods:{
+    computed:{
+      getOrderAmount(){
+        this.from1.goodsAmount = this.goodsAmount + this.currentFee;
+        return this.from1.goodsAmount;
+      }
+    },
+    methods:{
+      submitvalidate(){
+        this.$refs.from1.validate((valid)=>{
+          if(valid){
+            this.submit();
+          }else{
+            console.log('表单验证失败');
+            return false;
+          }
+        });
+      },
+      submit(){
+        console.lo(this.from1);
+        this.from1.goodsids = this.gids;
+        this.from1.cargoodsobj = JSON.stringify(getItem());
+        this.$ajax.post('/site/validate/order/setoder',this.from1).this(res=>{
+          if(res.data.status == 1){
+            this.$message.error(res.data.message);
+            return;
+          }
+          this.$message({
+            type: 'success',
+            message: '下单成功',
+            duration: 1000,
+            onClose:()=>{
+              this.$router.push({name:'pay',params:{orderid:res.data.message.orderid}})
+            }
+          })
+        })
+      },
+      expressChange(labelvlue){
+        console.log(labelvlue);
+        this.currentFee = this.expressFee[labelvlue];
+        this.from1.expressMoment = this.currentFee;
+      },
+      onSelected(data){
+        console.log(data);
+        this.from1.area = data;
+      },
       getbuygoodslist(){
         var url = "/site/validate/order/getgoodslist/"+this.gids;
         this.$ajax.get(url).then(res=>{
           this.buygoodslist = res.data.message;
           var obj = getItem();
           this.buygoodslist.forEach((item,index)=>{
-            item.buycount = obj[item.id]
+            item.buycount = obj[item.id];
+            this.goodsAmount += (item.buycount * item.sell_price);
           });
         })
       }

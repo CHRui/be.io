@@ -20,23 +20,32 @@ import goodslist from './components/goods/goodslist.vue';
 import goodsinfo from './components/goods/goodsinfo.vue';
 import car from './components/goods/car.vue';
 import shopping from './components/goods/shopping.vue';
+import pay from './components/goods/pay.vue';
+import login from './components/account/login.vue';
 
 // 3.0.2 实例化对象并且定义路由规则
 var router = new VueRouter({
-    routes:[
+    routes: [
         // 默认跳转的路由规则
-        {name:'default',path:'/',redirect:'/site/goodslist'},
-       
+        { name: 'default', path: '/', redirect: '/site/goodslist' },
         // 布局
-        {name:'layout',path:'/site',component:layout,
-        children:[
-            // 商品列表
-           {name:'goodslist',path:'goodslist',component:goodslist},
-           {name:'goodsinfo',path:'goodsinfo/:goodsid',component:goodsinfo},
-           {name:'car',path:'car',component:car},
-           { name: 'shopping', path: 'shopping/:ids', component: shopping}
-        ]                      
-    }
+        {
+            name: 'layout', path: '/site', component: layout,
+            children: [
+                // 登录页面
+                { name: 'login', path: 'login', component: login, meta: { nosave: 'true' } },
+                // 商品列表
+                { name: 'goodslist', path: 'goodslist', component: goodslist },
+                // 商品详情页面    
+                { name: 'goodsinfo', path: 'goodsinfo/:goodsid', component: goodsinfo },
+                // 购物车页面    
+                { name: 'car', path: 'car', component: car },
+                // 购物下单页面
+                { name: 'shopping', path: 'shopping/:ids', component: shopping, meta: { checklogin: 'true' } },
+                // 支付页面
+                { name: 'pay', path: 'pay/:orderid', component: pay, meta: { checklogin: 'true' } }
+            ]
+        }
     ]
 });
 
@@ -50,8 +59,8 @@ import '../statics/site/css/style.css'
 
 // 绑定到vue中
 Vue.use(elementUI);
-import {Affix} from 'iview';
-Vue.component('Affix',Affix);
+import { Affix } from 'iview';
+Vue.component('Affix', Affix);
 
 // 5.0 导入axios
 import axios from 'axios';
@@ -65,19 +74,38 @@ axios.defaults.withCredentials = true;
 // 5.0.2 将axios对象绑定到Vue的原型属性 $ajax上，将来在任何组件中均可以通过this.$ajax中的get(),post() 就可以发出ajax请求了
 Vue.prototype.$ajax = axios;
 
+// 6.0 全局守卫,添加一个全局的前置钩子函数 
+//router.beforeEnter
+router.beforeEach((to, from, next) => {
+    if(to.meta.nosave != "true"){
+        localStorage.setItem('currentPath',to.path);
+    }
+    if(to.meta.checklogin){
+        axios.get('/site/account/islogin').then(res=>{
+            if(res.data.code == "logined"){
+                next();
+            }else{
+                router.push({name:'login'})
+            }
+        });
+    }else{
+        next();
+    }
+});
+
 
 // 6.0 定义一个全局过滤器用来格式化日期
-Vue.filter('datefmt',(input,fmtstring)=>{
+Vue.filter('datefmt', (input, fmtstring) => {
     var date = new Date(input);
     var y = date.getFullYear();
-    var m = date.getMonth() +1 ;
+    var m = date.getMonth() + 1;
     var d = date.getDate();
     var h = date.getHours();
     var mm = date.getMinutes();
     var ss = date.getSeconds();
-    if(fmtstring == 'YYYY-MM-DD HH:mm:ss'){
+    if (fmtstring == 'YYYY-MM-DD HH:mm:ss') {
         return y + '-' + m + '-' + d + ' ' + h + ':' + mm + ':' + ss;
-    }else{
+    } else {
         return y + '-' + m + '-' + d;
     }
 });
@@ -88,33 +116,35 @@ Vue.use(vuex);
 var state = {
     buyCount: 0
 }
-import {setItem,getItem} from './kits/localSto.js';
+import { setItem, getItem } from './kits/localSto.js';
 
 var mutations = {
-    changeCount(state,goodsobj){
-        var obj = getItem;
-        var tcount =0;
-        for(var key in obj){
+    changeCount(state, goodsobj) {
+        var obj = getItem();
+        var tcount = 0;
+        // console.log(tcount);
+        for (var key in obj) {
             tcount += obj[key];
+            // console.log(tcount);
         }
         state.buyCount = tcount;
     }
 }
 
 var actions = {
-    changeCount({commit},goodsobj){
-        commit('changeCount',goodsobj);
+    changeCount({ commit }, goodsobj) {
+        commit('changeCount', goodsobj);
     }
 }
 
 var getters = {
-    getBuyCount(state){
-        if(state.buyCount > 0){
+    getBuyCount(state) {
+        if (state.buyCount > 0) {
             return state.buyCount;
-        }else{
-            var obj = getItem;
+        } else {
+            var obj = getItem();
             var tcount = 0;
-            for(var key in obj){
+            for (var key in obj) {
                 tcount += obj[key];
             }
             state.buyCount = tcount;
@@ -129,10 +159,10 @@ var store = new vuex.Store({
 
 // 7.0 实例化vue对象
 new Vue({
-    el:'#app',
+    el: '#app',
     router,  //绑定路由对象使它生效
     store,   //在vue中注入store
     // render:function(create){create(App)}
     // 将app组件编译将这个组件中的内容填充到 el:指向的app这个div中
-    render:create=>create(App)  
+    render: create => create(App)
 });

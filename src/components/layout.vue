@@ -13,15 +13,16 @@
                         <a href="/login.html">登录</a>
                         <a href="/register.html">注册</a>
                         <strong>|</strong>
-                        <a id="layoutbuycar" href="/cart.html">
+                        <!-- <a id="layoutbuycar" href="/cart.html">
                             <i class="iconfont icon-cart"></i>
-                            购物车(<span id="shoppingCartCount">{{buyTotalCount}}</span>)</a>
+                            购物车(<span id="shoppingCartCount">{{buyTotalCount}}</span>)
+                        </a> -->
 
-
-                        <!-- <router-link to="/site/car">
+                        <router-link to="/site/car">
                             <i class="iconfont icon-cart"></i>
                             购物车(<span id="layoutbuycar">{{this.$store.getters.getBuyCount}}</span>)
-                        </router-link> -->
+                        </router-link>
+
                         <!-- <a href="/content/contact.html"><i class="iconfont icon-phone"></i>联系我们</a>
                         <a href="/cart.html"><i class="iconfont icon-cart"></i>购物车(<span id="shoppingCartCount"><script type="text/javascript" src="/tools/submit_ajax.ashx?action=view_cart_count"></script></span>)</a> -->
                     </div>
@@ -90,12 +91,12 @@
     export default {
         data() {
             return {
+                // 用户商品默认的数量
                 buyTotalCount:0
             }
         },
         mounted() {
             // jquery的实现应该要能够找到dom对象     
-             
             $("#menu2 li a").wrapInner('<span class="out"></span>');
             $("#menu2 li a").each(function () {
                 $('<span class="over">' + $(this).text() + '</span>').appendTo(this);
